@@ -5,13 +5,25 @@ interface Props {
   fields: Record<string, string>
 }
 
-const ICONS = ['⚡', '🔒', '📈']
+const DEFAULT_ICONS = ['⚡', '🔒', '📈']
 
 function FeaturesSection({ fields }: Props) {
   const features = [
-    { title: fields.feature1Title, desc: fields.feature1Desc, icon: ICONS[0] },
-    { title: fields.feature2Title, desc: fields.feature2Desc, icon: ICONS[1] },
-    { title: fields.feature3Title, desc: fields.feature3Desc, icon: ICONS[2] },
+    {
+      title: fields.feature1Title,
+      desc: fields.feature1Desc,
+      icon: fields.feature1Icon || DEFAULT_ICONS[0],
+    },
+    {
+      title: fields.feature2Title,
+      desc: fields.feature2Desc,
+      icon: fields.feature2Icon || DEFAULT_ICONS[1],
+    },
+    {
+      title: fields.feature3Title,
+      desc: fields.feature3Desc,
+      icon: fields.feature3Icon || DEFAULT_ICONS[2],
+    },
   ]
 
   return (
@@ -48,7 +60,12 @@ function FeaturesSection({ fields }: Props) {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
           {features.map((f, i) => (
             <div key={i} className="text-center group">
-              <div className="text-5xl mb-5 transition-transform duration-300 group-hover:scale-110">
+              <div
+                data-edit-field={`feature${i + 1}Icon`}
+                data-layout-item="true"
+                style={getEditableStyle(fields, `feature${i + 1}Icon`)}
+                className="text-5xl mb-5 transition-transform duration-300 group-hover:scale-110"
+              >
                 {f.icon}
               </div>
               <h3

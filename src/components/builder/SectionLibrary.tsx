@@ -7,6 +7,8 @@ import {
   LayoutGrid,
   BarChart3,
   MessageSquare,
+  Mail,
+  MapPinned,
   ImageIcon,
   Zap,
   AlignJustify,
@@ -23,6 +25,8 @@ const ICONS: Record<SectionType, React.ReactNode> = {
   stats:        <BarChart3 size={15} />,
   testimonials: <MessageSquare size={15} />,
   gallery:      <ImageIcon size={15} />,
+  contact:      <Mail size={15} />,
+  map:          <MapPinned size={15} />,
   cta:          <Zap size={15} />,
   footer:       <AlignJustify size={15} />,
 }

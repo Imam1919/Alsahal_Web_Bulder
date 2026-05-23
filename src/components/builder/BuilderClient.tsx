@@ -5,6 +5,7 @@ import { AnimatePresence, motion } from 'framer-motion'
 import { PanelLeftOpen, PanelLeftClose } from 'lucide-react'
 import { useBuilderStore } from '@/lib/store'
 import Toolbar from './Toolbar'
+import PageTabs from './PageTabs'
 import SectionLibrary from './SectionLibrary'
 import Canvas from './Canvas'
 import SectionEditor from './SectionEditor'
@@ -35,6 +36,9 @@ export default function BuilderClient() {
     <div className="h-full flex flex-col bg-slate-950 overflow-hidden">
       {/* Top toolbar */}
       <Toolbar />
+
+      {/* Page tabs */}
+      <PageTabs />
 
       {/* Main layout */}
       <div className="flex flex-1 min-h-0 relative">

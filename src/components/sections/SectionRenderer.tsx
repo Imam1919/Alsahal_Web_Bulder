@@ -10,6 +10,8 @@ import FeaturesSection from './FeaturesSection'
 import StatsSection from './StatsSection'
 import TestimonialsSection from './TestimonialsSection'
 import GallerySection from './GallerySection'
+import ContactSection from './ContactSection'
+import MapSection from './MapSection'
 import CTASection from './CTASection'
 import FooterSection from './FooterSection'
 
@@ -70,6 +72,8 @@ function SectionRenderer({ section }: Props) {
     case 'stats':        content = <StatsSection fields={f} />; break
     case 'testimonials': content = <TestimonialsSection fields={f} />; break
     case 'gallery':      content = <GallerySection fields={f} />; break
+    case 'contact':      content = <ContactSection fields={f} />; break
+    case 'map':          content = <MapSection fields={f} />; break
     case 'cta':          content = <CTASection fields={f} />; break
     case 'footer':       content = <FooterSection fields={f} />; break
     default:

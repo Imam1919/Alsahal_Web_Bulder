@@ -3,16 +3,19 @@
 import { useRef } from 'react'
 import { Eye, EyeOff, Download, Upload, Layers, Monitor, Smartphone } from 'lucide-react'
 import { useBuilderStore } from '@/lib/store'
-import { PageSection } from '@/lib/types'
 
 export default function Toolbar() {
   const previewMode = useBuilderStore((s) => s.previewMode)
   const previewDevice = useBuilderStore((s) => s.previewDevice)
   const setPreviewMode = useBuilderStore((s) => s.setPreviewMode)
   const setPreviewDevice = useBuilderStore((s) => s.setPreviewDevice)
-  const importSections = useBuilderStore((s) => s.importSections)
+  const importProject = useBuilderStore((s) => s.importProject)
   const getExportJSON = useBuilderStore((s) => s.getExportJSON)
-  const sectionCount = useBuilderStore((s) => s.sections.length)
+  const pageCount = useBuilderStore((s) => s.pages.length)
+  const activeSectionCount = useBuilderStore((s) => {
+    const page = s.pages.find((p) => p.id === s.activePageId)
+    return page?.sections.length ?? 0
+  })
   const fileRef = useRef<HTMLInputElement>(null)
 
   function handleExport() {
@@ -21,7 +24,7 @@ export default function Toolbar() {
     const url = URL.createObjectURL(blob)
     const a = document.createElement('a')
     a.href = url
-    a.download = 'page-config.json'
+    a.download = 'project-config.json'
     a.click()
     URL.revokeObjectURL(url)
   }
@@ -33,10 +36,9 @@ export default function Toolbar() {
     reader.onload = (ev) => {
       try {
         const parsed = JSON.parse(ev.target?.result as string)
-        const sections: PageSection[] = Array.isArray(parsed)
-          ? parsed
-          : parsed?.sections ?? []
-        if (sections.length > 0) importSections(sections)
+        // Support both new multi-page format and old single-page format
+        const config = Array.isArray(parsed) ? { version: '1.0', sections: parsed } : parsed
+        importProject(config)
       } catch {
         // silently ignore malformed JSON
       }
@@ -53,11 +55,12 @@ export default function Toolbar() {
           <Layers size={14} className="text-white" />
         </div>
         <span className="text-white font-semibold text-sm tracking-tight select-none">
-          WebBuilder
+          Alsahal_WebBuilder
         </span>
-        {!previewMode && sectionCount > 0 && (
+        {!previewMode && (
           <span className="ml-1 px-1.5 py-0.5 rounded-full bg-indigo-600/30 text-indigo-300 text-[10px] font-medium">
-            {sectionCount} {sectionCount === 1 ? 'section' : 'sections'}
+            {pageCount} {pageCount === 1 ? 'page' : 'pages'} · {activeSectionCount}{' '}
+            {activeSectionCount === 1 ? 'section' : 'sections'}
           </span>
         )}
       </div>
@@ -73,7 +76,12 @@ export default function Toolbar() {
         />
 
         <ToolbarBtn icon={<Upload size={14} />} label="Import" onClick={() => fileRef.current?.click()} />
-        <ToolbarBtn icon={<Download size={14} />} label="Export" onClick={handleExport} />
+        <ToolbarBtn
+          icon={<Download size={14} />}
+          label="Export All"
+          onClick={handleExport}
+          title="Download all pages as project-config.json"
+        />
 
         <div className="w-px h-5 bg-slate-700 mx-1" />
 
@@ -124,14 +132,17 @@ function ToolbarBtn({
   icon,
   label,
   onClick,
+  title,
 }: {
   icon: React.ReactNode
   label: string
   onClick: () => void
+  title?: string
 }) {
   return (
     <button
       onClick={onClick}
+      title={title}
       className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-slate-400 hover:text-white hover:bg-slate-800 transition-all duration-150"
     >
       {icon}
