@@ -5,6 +5,8 @@ export type SectionType =
   | 'stats'
   | 'testimonials'
   | 'gallery'
+  | 'contact'
+  | 'map'
   | 'cta'
   | 'footer'
 
@@ -31,4 +33,16 @@ export interface PageSection {
 export interface PageConfig {
   version: string
   sections: PageSection[]
+}
+
+export interface Page {
+  id: string
+  name: string
+  slug: string
+  sections: PageSection[]
+}
+
+export interface ProjectConfig {
+  version: string
+  pages: Page[]
 }

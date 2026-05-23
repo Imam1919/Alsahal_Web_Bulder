@@ -12,9 +12,11 @@ export default function SectionEditor() {
   const updateField = useBuilderStore((s) => s.updateField)
   const activeFieldKey = useBuilderStore((s) => s.activeFieldKey)
   // Targeted selector: only re-renders when the selected section's data changes
-  const section = useBuilderStore((s) =>
-    s.selectedId ? s.sections.find((sec) => sec.id === s.selectedId) : undefined
-  )
+  const section = useBuilderStore((s) => {
+    if (!s.selectedId) return undefined
+    const page = s.pages.find((p) => p.id === s.activePageId)
+    return page?.sections.find((sec) => sec.id === s.selectedId)
+  })
   const def = section ? getSectionDef(section.type) : null
 
   return (

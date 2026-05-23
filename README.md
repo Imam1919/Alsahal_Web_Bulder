@@ -1,67 +1,93 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Web Builder
 
-## Getting Started
+Web Builder is a visual landing page builder for creating polished business pages without writing code. It gives customers a simple workspace where they can add ready-made website sections, customize the content, arrange the page, preview it, and save their work.
 
-First, run the development server:
+It is designed for small businesses, agencies, founders, and teams who need to quickly shape a professional landing page for a product, service, portfolio, or campaign.
+
+## What You Can Build
+
+With Web Builder, you can create a complete marketing page using reusable sections:
+
+- Header with logo and navigation links
+- Hero banner with headline, subtitle, image, and call-to-action button
+- Feature highlights
+- Stats and key numbers
+- Customer testimonials
+- Image gallery
+- Call-to-action banner
+- Footer with brand text, links, and copyright
+
+Each section comes with useful default content, so you can start from a clean example and replace it with your own brand, offer, images, links, and colors.
+
+## How Customers Use It
+
+1. Open the builder.
+2. Choose sections from the section library on the left.
+3. Click a section on the page to edit it.
+4. Update text, colors, images, buttons, links, and layout values from the editor panel.
+5. Drag sections up or down to change the page order.
+6. Use preview mode to see the page without editing controls.
+7. Switch between desktop and phone preview to check the responsive layout.
+8. Export the page when you want to save or share the design.
+9. Import a saved file later to continue editing.
+
+## Key Features
+
+- No-code page building
+- Click-to-add section library
+- Live section editing
+- Drag-and-drop section ordering
+- Desktop and mobile preview modes
+- Import and export support for saved page designs
+- Custom text, colors, images, links, and calls to action
+- Ready-made sections for common business landing pages
+
+## Running the Project
+
+Install the project dependencies:
+
+```bash
+npm install
+```
+
+Start the local development server:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
-Architecture
 
-src/
-├── app/
-│   ├── layout.tsx          # SSR root layout (server component)
-│   └── page.tsx            # SSR shell → imports BuilderClient
-├── lib/
-│   ├── types.ts            # SectionType, PageSection, SectionDefinition
-│   ├── section-registry.ts # 8 pre-made section definitions + defaults
-│   └── store.ts            # Zustand store (sections, selection, preview)
-└── components/
-    ├── builder/
-    │   ├── BuilderClient.tsx   # "use client" root — three-panel layout
-    │   ├── Toolbar.tsx         # Import / Export / Preview toggle
-    │   ├── SectionLibrary.tsx  # Left sidebar — click to add sections
-    │   ├── Canvas.tsx          # Center — sortable drag-and-drop canvas
-    │   ├── DraggableSection.tsx # Per-section sortable wrapper + control bar
-    │   └── SectionEditor.tsx   # Right sidebar — live field editor
-    └── sections/
-        ├── SectionRenderer.tsx  # Switch router (memoized)
-        ├── HeaderSection.tsx    # Logo + nav links
-        ├── HeroSection.tsx      # Big banner + CTA + background image
-        ├── FeaturesSection.tsx  # 3-column feature cards
-        ├── StatsSection.tsx     # 4 metric tiles
-        ├── TestimonialsSection.tsx
-        ├── GallerySection.tsx   # 6-image grid with hover zoom
-        ├── CTASection.tsx       # CTA banner
-        └── FooterSection.tsx    # Footer with links
+Open the app in your browser:
 
-Key Features
+```text
+http://localhost:3000
+```
 
-![alt text](image.png)
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Saving Your Work
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Use the export button in the toolbar to download your current page design as a JSON file. This file stores the sections, order, and edited content.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+To continue working later, use the import button and select the exported JSON file.
 
-## Learn More
+## Best For
 
-To learn more about Next.js, take a look at the following resources:
+Web Builder is useful for:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- Creating landing pages for new products or services
+- Drafting quick website concepts for clients
+- Building campaign pages
+- Preparing portfolio or agency showcases
+- Testing page structure before a full website build
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Technology
 
-## Deploy on Vercel
+This project is built with Next.js, React, TypeScript, Tailwind CSS, Zustand, Framer Motion, and dnd kit.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Available Commands
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```bash
+npm run dev
+npm run build
+npm run start
+npm run lint
+```
+

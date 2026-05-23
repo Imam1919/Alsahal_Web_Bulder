@@ -22,11 +22,22 @@ import DraggableSection from './DraggableSection'
 import SectionRenderer from '@/components/sections/SectionRenderer'
 
 export default function Canvas() {
-  const sections = useBuilderStore(useShallow((s) => s.sections))
+  // Sections for the page currently being edited
+  const activeSections = useBuilderStore(
+    useShallow((s) => s.pages.find((p) => p.id === s.activePageId)?.sections ?? [])
+  )
+  // Sections for the page currently being previewed (may differ when user tabs in preview)
+  const previewSections = useBuilderStore(
+    useShallow((s) =>
+      s.pages.find((p) => p.id === (s.previewPageId ?? s.activePageId))?.sections ?? []
+    )
+  )
+  const pages = useBuilderStore(useShallow((s) => s.pages))
   const previewMode = useBuilderStore((s) => s.previewMode)
   const previewDevice = useBuilderStore((s) => s.previewDevice)
   const reorderSections = useBuilderStore((s) => s.reorderSections)
   const selectSection = useBuilderStore((s) => s.selectSection)
+  const setPreviewPage = useBuilderStore((s) => s.setPreviewPage)
   const [activeId, setActiveId] = useState<string | null>(null)
 
   const sensors = useSensors(
@@ -37,16 +48,32 @@ export default function Canvas() {
     const { active, over } = event
     setActiveId(null)
     if (over && active.id !== over.id) {
-      const oldIdx = sections.findIndex((s) => s.id === active.id)
-      const newIdx = sections.findIndex((s) => s.id === over.id)
-      reorderSections(arrayMove(sections, oldIdx, newIdx))
+      const oldIdx = activeSections.findIndex((s) => s.id === active.id)
+      const newIdx = activeSections.findIndex((s) => s.id === over.id)
+      reorderSections(arrayMove(activeSections, oldIdx, newIdx))
     }
   }
 
-  const activeSection = activeId ? sections.find((s) => s.id === activeId) : null
+  // Intercept <a> clicks in preview so internal page links navigate within the preview
+  function handlePreviewClick(e: React.MouseEvent) {
+    const anchor = (e.target as Element).closest('a')
+    if (!anchor) return
+    const href = (anchor.getAttribute('href') ?? '').trim()
+    if (!href || href === '#') return
+    const slug = href.replace(/^\//, '')
+    const matched = pages.find((p) => p.slug === slug || p.slug === href.replace(/^\//, ''))
+    if (matched) {
+      e.preventDefault()
+      setPreviewPage(matched.id)
+    }
+  }
+
+  const activeSection = activeId ? activeSections.find((s) => s.id === activeId) : null
+
+  const currentSections = previewMode ? previewSections : activeSections
 
   /* ── Empty state ─────────────────────────────────────────────── */
-  if (sections.length === 0) {
+  if (currentSections.length === 0) {
     return (
       <div className="h-full flex flex-col items-center justify-center">
         <motion.div
@@ -58,10 +85,12 @@ export default function Canvas() {
           <div className="w-16 h-16 rounded-2xl bg-slate-200 flex items-center justify-center mb-5 mx-auto">
             <Layers size={26} className="text-slate-400" />
           </div>
-          <p className="text-base font-semibold text-slate-500 mb-2">Your page is empty</p>
+          <p className="text-base font-semibold text-slate-500 mb-2">
+            {previewMode ? 'This page is empty' : 'Your page is empty'}
+          </p>
           <p className="text-sm text-slate-400 leading-relaxed">
             {previewMode
-              ? 'Exit preview mode to add sections'
+              ? 'Exit preview and add sections to this page'
               : 'Click a section in the library to add it'}
           </p>
         </motion.div>
@@ -73,12 +102,14 @@ export default function Canvas() {
   if (previewMode) {
     const page = (
       <motion.div
+        key="preview"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.2 }}
         className="min-h-full bg-white"
+        onClick={handlePreviewClick}
       >
-        {sections.map((section) => (
+        {previewSections.map((section) => (
           <SectionRenderer key={section.id} section={section} />
         ))}
       </motion.div>
@@ -94,9 +125,7 @@ export default function Canvas() {
       )
     }
 
-    return (
-      page
-    )
+    return page
   }
 
   /* ── Edit mode with DnD ──────────────────────────────────────── */
@@ -118,11 +147,11 @@ export default function Canvas() {
         onDragCancel={() => setActiveId(null)}
       >
         <SortableContext
-          items={sections.map((s) => s.id)}
+          items={activeSections.map((s) => s.id)}
           strategy={verticalListSortingStrategy}
         >
           <AnimatePresence mode="popLayout">
-            {sections.map((section) => (
+            {activeSections.map((section) => (
               <DraggableSection key={section.id} section={section} />
             ))}
           </AnimatePresence>
