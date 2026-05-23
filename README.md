@@ -13,7 +13,38 @@ pnpm dev
 # or
 bun dev
 ```
+Architecture
 
+src/
+├── app/
+│   ├── layout.tsx          # SSR root layout (server component)
+│   └── page.tsx            # SSR shell → imports BuilderClient
+├── lib/
+│   ├── types.ts            # SectionType, PageSection, SectionDefinition
+│   ├── section-registry.ts # 8 pre-made section definitions + defaults
+│   └── store.ts            # Zustand store (sections, selection, preview)
+└── components/
+    ├── builder/
+    │   ├── BuilderClient.tsx   # "use client" root — three-panel layout
+    │   ├── Toolbar.tsx         # Import / Export / Preview toggle
+    │   ├── SectionLibrary.tsx  # Left sidebar — click to add sections
+    │   ├── Canvas.tsx          # Center — sortable drag-and-drop canvas
+    │   ├── DraggableSection.tsx # Per-section sortable wrapper + control bar
+    │   └── SectionEditor.tsx   # Right sidebar — live field editor
+    └── sections/
+        ├── SectionRenderer.tsx  # Switch router (memoized)
+        ├── HeaderSection.tsx    # Logo + nav links
+        ├── HeroSection.tsx      # Big banner + CTA + background image
+        ├── FeaturesSection.tsx  # 3-column feature cards
+        ├── StatsSection.tsx     # 4 metric tiles
+        ├── TestimonialsSection.tsx
+        ├── GallerySection.tsx   # 6-image grid with hover zoom
+        ├── CTASection.tsx       # CTA banner
+        └── FooterSection.tsx    # Footer with links
+
+Key Features
+
+![alt text](image.png)
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
